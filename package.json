@@ -1,0 +1,47 @@
+{
+  "name": "halloween-ai-greeter",
+  "version": "1.0.0",
+  "description": "A spooky face detection and greeting system that generates Halloween-themed greetings using OpenAI's vision capabilities",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "start": "npm run clean && npm run build && node ./dist/index.js",
+    "build": "tsc",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "halloween",
+    "face-detection",
+    "opencv",
+    "computer-vision",
+    "greeter",
+    "ai",
+    "openai",
+    "text-to-speech",
+    "tts",
+    "vision"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@techstark/opencv-js": "^4.11.0-release.1",
+    "dotenv": "^17.2.3",
+    "jimp": "^0.22.10",
+    "mustache": "^4.2.0",
+    "openai": "^4.0.0",
+    "say": "^0.16.0",
+    "screenshot-desktop": "^1.15.2"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.2.6",
+    "@types/node": "^20.0.0",
+    "@types/screenshot-desktop": "^1.15.0",
+    "esbuild": "^0.25.10",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
