@@ -56,7 +56,7 @@ const countFaces = async (
   const minSize = new cv.Size(minDimension, minDimension);
 
   const scaleFactor = 1.1;
-  const minNeighbors = 2;
+  const minNeighbors = 3;
   const flags = 0;
 
   if (faceCascade) {

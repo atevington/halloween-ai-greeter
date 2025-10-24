@@ -17,34 +17,28 @@ const greetingFactory = ({
       return "";
     }
 
-    try {
-      const renderedPrompt = Mustache.render(prompt, { numFaces });
+    const renderedPrompt = Mustache.render(prompt, { numFaces });
 
-      const response = await openai.chat.completions.create({
-        model,
-        messages: [
-          {
-            role: "system",
-            content: renderedPrompt,
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "image_url",
-                image_url: { url: imageString },
-              },
-            ],
-          },
-        ],
-      });
+    const response = await openai.chat.completions.create({
+      model,
+      messages: [
+        {
+          role: "system",
+          content: renderedPrompt,
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "image_url",
+              image_url: { url: imageString },
+            },
+          ],
+        },
+      ],
+    });
 
-      return response.choices[0]?.message?.content || "";
-    } catch (error) {
-      console.error("OpenAI API error:", error);
-
-      return "";
-    }
+    return response.choices[0]?.message?.content || "";
   };
 };
 

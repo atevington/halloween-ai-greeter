@@ -1,3 +1,4 @@
+import { join as pathJoin } from "path";
 const minIntervalMs = 100;
 const minCoolDownMs = 0;
 const minMaxDimension = 160;
@@ -60,3 +61,7 @@ Include a gentle reminder to please only take one piece/bag of candy per person.
 export const model = (process.env.OPENAI_MODEL || "").trim() || "gpt-4o-mini";
 
 export const apiKey = (process.env.OPENAI_API_KEY || "").trim();
+
+export const initialGreetingsDir =
+  (process.env.INITIAL_GREETINGS_DIR || "").trim() ||
+  pathJoin(process.cwd(), "initialGreetings");

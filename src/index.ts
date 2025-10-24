@@ -6,6 +6,7 @@ import FaceDetector from "./faceDetector.js";
 import onFacesDetectedFactory from "./onFacesDetectedFactory.js";
 import greetingFactory from "./greetingFactory.js";
 import speakFactory from "./speakFactory.js";
+import playInitialGreetingFactory from "./playInitialGreetingFactory.js";
 
 import {
   logPath,
@@ -17,17 +18,14 @@ import {
   prompt,
   model,
   apiKey,
+  initialGreetingsDir,
 } from "./settings.js";
 
-const getGreeting = greetingFactory({
-  prompt,
-  model,
-  apiKey,
-});
-
+const playInitialGreeting = playInitialGreetingFactory(initialGreetingsDir);
+const getGreeting = greetingFactory({ prompt, model, apiKey });
 const speak = speakFactory(voice);
-
 const onFacesDetected = onFacesDetectedFactory({
+  playInitialGreeting,
   getGreeting,
   speak,
   logPath,
