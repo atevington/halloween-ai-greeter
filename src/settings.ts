@@ -45,6 +45,8 @@ export const prompt =
   `
 Given an image containing approximately {{numFaces}} person(s) (possibly dressed up for Halloween), respond with a brief, fun, and creative Halloween-themed greeting.
 
+If you determine there are no people in the image (i.e. not {{numFaces}} people, but actually 0 people), respond with an empty string with no additional text.
+
 Incorporate the costumes, accessories, and people from the image in your response whenever possible (for example, "love the batman costume!", "that mask is so scary and awesome!", "what a pretty princess dress!", etc.).
 
 Keep it under 50 words and appropriate for all ages.
@@ -54,8 +56,6 @@ Do not use emojis or markdown formatting, just return plain text.
 Do not include any meta-commentary, just the greeting.
 
 Refer to the person(s) in the image only with neutral group terms such as "you," "you all," or "you guys." Do not use any themed or possessive phrases like "my little ghosts" or "you little goblins."
-
-Include a gentle reminder to please only take one piece/bag of candy per person.
 `.trim();
 
 export const model = (process.env.OPENAI_MODEL || "").trim() || "gpt-4o-mini";

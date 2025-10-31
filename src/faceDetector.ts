@@ -12,7 +12,7 @@ type GetImageFunction = () => Promise<Buffer>;
 type OnFacesDetectedFunction = (
   numFaces: number,
   imageString: string
-) => Promise<void>;
+) => Promise<boolean>;
 
 const processImage = async (
   buffer: Buffer,
@@ -109,12 +109,14 @@ class FaceDetector {
         console.log(`Found ${numFaces} face(s) in image...`);
 
         console.time("onFacesDetected");
-        await this.onFacesDetected(numFaces, base64);
+        const success = await this.onFacesDetected(numFaces, base64);
         console.timeEnd("onFacesDetected");
 
-        console.time("pauseForCoolDown");
-        await pause(this.coolDownMs);
-        console.timeEnd("pauseForCoolDown");
+        if (success) {
+          console.time("pauseForCoolDown");
+          await pause(this.coolDownMs);
+          console.timeEnd("pauseForCoolDown");
+        }
       }
     } catch (error) {
       console.error("Face detection error:", error);

@@ -58,34 +58,42 @@ const onFacesDetectedFactory = ({
     console.timeEnd("speak");
   };
 
-  return async (numFaces: number, imageString: string): Promise<void> => {
+  return async (numFaces: number, imageString: string): Promise<boolean> => {
     const [initialGreeting, greeting] = await Promise.all([
       playInitialGreetingWrapped(),
       getGreetingWrapped(numFaces, imageString),
     ]);
 
-    if (logPath) {
-      const now = new Date();
+    if (greeting && greeting.trim()) {
+      if (logPath) {
+        const now = new Date();
 
-      const json = {
-        timestamp: now.toISOString(),
-        numFaces,
-        initialGreeting,
-        greeting,
-        imageString,
-      };
+        const json = {
+          timestamp: now.toISOString(),
+          numFaces,
+          initialGreeting,
+          greeting,
+          imageString,
+        };
 
-      const writePath = pathResolve(pathJoin(logPath, `${now.getTime()}.json`));
+        const writePath = pathResolve(
+          pathJoin(logPath, `${now.getTime()}.json`)
+        );
 
-      writeFile(writePath, JSON.stringify(json, null, 2)).then(
-        null,
-        (error) => {
-          console.error("Error writing log file:", error);
-        }
-      );
+        writeFile(writePath, JSON.stringify(json, null, 2)).then(
+          null,
+          (error) => {
+            console.error("Error writing log file:", error);
+          }
+        );
+      }
+
+      await speakWrapped(greeting);
+
+      return true;
     }
 
-    await speakWrapped(greeting);
+    return false;
   };
 };
 
