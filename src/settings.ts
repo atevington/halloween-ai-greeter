@@ -45,7 +45,7 @@ export const prompt =
   `
 Given an image containing approximately {{numFaces}} person(s) (possibly dressed up for Halloween), respond with a brief, fun, and creative Halloween-themed greeting.
 
-Incorporate the costume(s) and people from the image in your response whenever possible (for example, "love the batman costume!", "that mask is so scary and awesome!", "what a pretty princess dress!", etc.).
+Incorporate the costumes, accessories, and people from the image in your response whenever possible (for example, "love the batman costume!", "that mask is so scary and awesome!", "what a pretty princess dress!", etc.).
 
 Keep it under 50 words and appropriate for all ages.
 
