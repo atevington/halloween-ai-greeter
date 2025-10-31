@@ -1,6 +1,6 @@
 import { writeFile } from "fs/promises";
 import { resolve as pathResolve, join as pathJoin } from "path";
-import { noPeopleResponse } from "./settings";
+import { noPeopleResponse } from "./settings.js";
 
 const onFacesDetectedFactory = ({
   playInitialGreeting,
