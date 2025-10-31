@@ -40,12 +40,14 @@ export const logPath = (process.env.LOG_PATH || "").trim();
 
 export const voice = process.env.TTS_VOICE;
 
+export const noPeopleResponse = "NO_PEOPLE_PRESENT";
+
 export const prompt =
   (process.env.OPENAI_PROMPT || "").trim() ||
   `
 Given an image containing approximately {{numFaces}} person(s) (possibly dressed up for Halloween), respond with a brief, fun, and creative Halloween-themed greeting.
 
-If you determine there are no people in the image (i.e. not {{numFaces}} people, but actually 0 people), respond with an empty string with no additional text.
+If you determine there are no people in the image (i.e. not {{numFaces}} people, but actually 0 people), respond with "${noPeopleResponse}" with no additional text or further explanation.
 
 Incorporate the costumes, accessories, and people from the image in your response whenever possible (for example, "love the batman costume!", "that mask is so scary and awesome!", "what a pretty princess dress!", etc.).
 

@@ -1,5 +1,6 @@
 import { writeFile } from "fs/promises";
 import { resolve as pathResolve, join as pathJoin } from "path";
+import { noPeopleResponse } from "./settings";
 
 const onFacesDetectedFactory = ({
   playInitialGreeting,
@@ -64,7 +65,11 @@ const onFacesDetectedFactory = ({
       getGreetingWrapped(numFaces, imageString),
     ]);
 
-    if (greeting && greeting.trim()) {
+    if (
+      greeting &&
+      greeting.trim() &&
+      greeting.indexOf(noPeopleResponse) === -1
+    ) {
       if (logPath) {
         const now = new Date();
 
