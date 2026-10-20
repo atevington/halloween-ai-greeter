@@ -105,6 +105,4 @@ export const decisionThreshold = Math.min(
 
 export const apiKey = (process.env.OPENAI_API_KEY || "").trim();
 
-export const initialGreetingsDir =
-  (process.env.INITIAL_GREETINGS_DIR || "").trim() ||
-  pathJoin(process.cwd(), "initialGreetings");
+export const initialGreetingsDir = pathJoin(process.cwd(), "initialGreetings");
