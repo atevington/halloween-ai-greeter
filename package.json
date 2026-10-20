@@ -2,13 +2,10 @@
   "name": "halloween-ai-greeter",
   "version": "1.0.0",
   "description": "A spooky face detection and greeting system that generates Halloween-themed greetings using OpenAI's vision capabilities",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "start": "npm run clean && npm run build && node ./dist/index.js",
-    "build": "tsc",
-    "clean": "rimraf dist"
+    "start": "tsx --env-file-if-exists=.env src/index.ts",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "halloween",
@@ -25,25 +22,22 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@techstark/opencv-js": "^4.11.0-release.1",
-    "dotenv": "^17.2.3",
-    "jimp": "^0.22.10",
+    "@techstark/opencv-js": "4.11.0-release.1",
+    "jimp": "^1.6.1",
     "mustache": "^4.2.0",
-    "openai": "^4.0.0",
-    "say": "^0.16.0",
-    "screenshot-desktop": "^1.15.2",
+    "openai": "^7.39.0",
+    "screenshot-desktop": "^1.15.7",
     "sound-play": "^1.1.0"
   },
   "devDependencies": {
     "@types/mustache": "^4.2.6",
-    "@types/node": "^20.0.0",
+    "@types/node": "^24.10.1",
     "@types/screenshot-desktop": "^1.15.0",
     "@types/sound-play": "^1.1.3",
-    "esbuild": "^0.25.10",
-    "rimraf": "^5.0.0",
-    "typescript": "^5.0.0"
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=22.9.0"
   }
 }

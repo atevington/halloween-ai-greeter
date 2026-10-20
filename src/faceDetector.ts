@@ -1,4 +1,4 @@
-import Jimp from "jimp";
+import { Jimp } from "jimp";
 
 type CountFacesFunction = (
   imageData: Uint8Array,
@@ -21,15 +21,19 @@ const processImage = async (
   countFaces: CountFacesFunction
 ): Promise<{ base64: string; numFaces: number }> => {
   const jimpImage = await Jimp.read(buffer);
-  let { width, height } = jimpImage.bitmap;
+  let width = jimpImage.width;
+  let height = jimpImage.height;
 
   const maxDim = Math.max(width, height);
 
   if (maxDim > maxDimension) {
     const scale = maxDimension / maxDim;
-    jimpImage.resize(Math.round(width * scale), Math.round(height * scale));
-    width = jimpImage.getWidth();
-    height = jimpImage.getHeight();
+    jimpImage.resize({
+      w: Math.round(width * scale),
+      h: Math.round(height * scale),
+    });
+    width = jimpImage.width;
+    height = jimpImage.height;
   }
 
   const numFaces = await countFaces(
@@ -40,7 +44,7 @@ const processImage = async (
   );
 
   if (numFaces > 0) {
-    const base64 = await jimpImage.getBase64Async(Jimp.MIME_PNG);
+    const base64 = await jimpImage.getBase64("image/png");
     return { base64, numFaces };
   }
 

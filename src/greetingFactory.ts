@@ -1,13 +1,16 @@
 import OpenAI from "openai";
 import Mustache from "mustache";
+import type { ReasoningEffort } from "./settings.js";
 
 const greetingFactory = ({
   prompt,
   model,
+  reasoningEffort,
   apiKey,
 }: {
   prompt: string;
   model: string;
+  reasoningEffort: ReasoningEffort;
   apiKey: string;
 }) => {
   const openai = new OpenAI({ apiKey });
@@ -21,6 +24,7 @@ const greetingFactory = ({
 
     const response = await openai.chat.completions.create({
       model,
+      reasoning_effort: reasoningEffort,
       messages: [
         {
           role: "system",
