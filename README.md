@@ -30,14 +30,15 @@ flowchart TD
   decide -->|No| interval
   decide -->|Yes| intro[Random mp3 from initialGreetings]
   decide -->|Yes| text[OpenAI vision greeting]
-  intro --> speak[OpenAI text-to-speech]
-  text --> speak
-  speak --> save[Save to logs, unless opted out]
+  text --> tts[OpenAI text-to-speech]
+  intro --> play[Play spoken greeting]
+  tts --> play
+  play --> save[Save to logs, unless opted out]
   save --> cool[Cooldown]
   cool --> shot
 ```
 
-The intro mp3s live in `initialGreetings`, including Creative Commons ghost samples from [freesound.org](https://freesound.org). Any extra `.mp3` you add is included. The greeting text and the intro start together.
+The intro mp3s live in `initialGreetings`, including Creative Commons ghost samples from [freesound.org](https://freesound.org). Any extra `.mp3` you add is included. One file is chosen at random. The greeting text and the intro start together. Speech is generated as soon as the text is ready, while the intro is still playing. The spoken greeting plays after the intro finishes.
 
 Each saved greeting is `123.json` (timestamp, face count, intro file, greeting text, speech file name, and the image) and `123.mp3`. The `logs` folder is in git; the files inside it are gitignored. Set `LOG=false` to skip saving. The greeting is still spoken, and the mp3 is deleted after playback.
 
@@ -66,7 +67,7 @@ DECISION_QUESTION=Are there people in active view who appear to be trick-or-trea
 - **`LOG`** — `false`, `0`, `no`, or `off` skips writing greetings to `logs`. Default is on.
 - **`TTS_VOICE`** — `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, `cedar`.
 - **`TTS_MODEL`** — `tts-1` or `tts-1-hd`.
-- **`OPENAI_PROMPT`** — greeting instructions. `{{numFaces}}` is the face count. Default is a built-in Halloween prompt.
+- **`OPENAI_PROMPT`** — greeting instructions. Default is a built-in Halloween prompt.
 - **`OPENAI_MODEL`** — vision model for the greeting. Default `gpt-6-luna`.
 - **`OPENAI_REASONING`** — `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`.
 - **`DECISION_QUESTION`** — yes/no question asked about each image before greeting.

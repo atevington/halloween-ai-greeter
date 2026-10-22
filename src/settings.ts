@@ -53,17 +53,7 @@ export const ttsModel = (process.env.TTS_MODEL || "").trim() || "tts-1";
 export const prompt =
   (process.env.OPENAI_PROMPT || "").trim() ||
   `
-Given an image containing approximately {{numFaces}} person(s) (possibly dressed up for Halloween), respond with a brief, fun, and creative Halloween-themed greeting.
-
-Incorporate the costumes, accessories, and people from the image in your response whenever possible (for example, "love the batman costume!", "that mask is so scary and awesome!", "what a pretty princess dress!", etc.).
-
-Keep it under 50 words and appropriate for all ages.
-
-Do not use emojis or markdown formatting, just return plain text.
-
-Do not include any meta-commentary, just the greeting.
-
-Refer to the person(s) in the image only with neutral group terms such as "you," "you all," or "you guys." Do not use any themed or possessive phrases like "my little ghosts" or "you little goblins."
+Give a spoken Halloween greeting for the people in this image. Mention a costume or prop if you can see one. One sentence, under 20 words, all ages. Plain text only, no commentary. Call them "you" or "you all."
 `.trim();
 
 export const model = (process.env.OPENAI_MODEL || "").trim() || "gpt-6-luna";

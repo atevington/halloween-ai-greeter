@@ -1,8 +1,4 @@
-import { unlink, writeFile } from "fs/promises";
-import { tmpdir } from "os";
-import { join as pathJoin } from "path";
 import OpenAI from "openai";
-import sound from "sound-play";
 
 const speakFactory = ({
   apiKey,
@@ -15,26 +11,24 @@ const speakFactory = ({
 }) => {
   const openai = new OpenAI({ apiKey });
 
-  return async (text: string, filePath?: string): Promise<void> => {
-    const speech = await openai.audio.speech.create({
-      model,
-      voice,
-      input: text,
-      response_format: "mp3",
-    });
-
-    const outputPath =
-      filePath ?? pathJoin(tmpdir(), `halloween-greeting-${Date.now()}.mp3`);
-    await writeFile(outputPath, Buffer.from(await speech.arrayBuffer()));
+  const generateVoice = async (text: string): Promise<Buffer> => {
+    console.time("generateVoice");
 
     try {
-      await sound.play(outputPath, 1);
+      const speech = await openai.audio.speech.create({
+        model,
+        voice,
+        input: text,
+        response_format: "mp3",
+      });
+
+      return Buffer.from(await speech.arrayBuffer());
     } finally {
-      if (!filePath) {
-        await unlink(outputPath).catch(() => undefined);
-      }
+      console.timeEnd("generateVoice");
     }
   };
+
+  return generateVoice;
 };
 
 export default speakFactory;

@@ -1,4 +1,5 @@
 import screenshotDesktop from "screenshot-desktop";
+import sound from "sound-play";
 import countFaces from "./countFaces.js";
 import FaceDetector from "./faceDetector.js";
 import onFacesDetectedFactory from "./onFacesDetectedFactory.js";
@@ -25,7 +26,13 @@ import {
   initialGreetingsDir,
 } from "./settings.js";
 
-const playInitialGreeting = playInitialGreetingFactory(initialGreetingsDir);
+const playSound = async (filePath: string) => {
+  await sound.play(filePath, 1);
+};
+const playInitialGreeting = playInitialGreetingFactory(
+  initialGreetingsDir,
+  playSound,
+);
 const getGreeting = greetingFactory({ prompt, model, reasoningEffort, apiKey });
 const decide = decisionFactory({
   apiKey,
@@ -33,12 +40,13 @@ const decide = decisionFactory({
   question: decisionQuestion,
   threshold: decisionThreshold,
 });
-const speak = speakFactory({ apiKey, voice, model: ttsModel });
+const generateVoice = speakFactory({ apiKey, voice, model: ttsModel });
 const onFacesDetected = onFacesDetectedFactory({
   decide,
   playInitialGreeting,
   getGreeting,
-  speak,
+  generateVoice,
+  playSound,
   logPath,
 });
 

@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import Mustache from "mustache";
 import type { ReasoningEffort } from "./settings.js";
 
 const greetingFactory = ({
@@ -15,20 +14,14 @@ const greetingFactory = ({
 }) => {
   const openai = new OpenAI({ apiKey });
 
-  return async (numFaces: number, imageString: string): Promise<string> => {
-    if (numFaces === 0) {
-      return "";
-    }
-
-    const renderedPrompt = Mustache.render(prompt, { numFaces });
-
+  return async (imageString: string): Promise<string> => {
     const response = await openai.chat.completions.create({
       model,
       reasoning_effort: reasoningEffort,
       messages: [
         {
           role: "system",
-          content: renderedPrompt,
+          content: prompt,
         },
         {
           role: "user",

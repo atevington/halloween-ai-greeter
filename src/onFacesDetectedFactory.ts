@@ -1,17 +1,20 @@
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, unlink, writeFile } from "fs/promises";
+import { tmpdir } from "os";
 import { resolve as pathResolve, join as pathJoin } from "path";
 
 const onFacesDetectedFactory = ({
   decide,
   playInitialGreeting,
   getGreeting,
-  speak,
+  generateVoice,
+  playSound,
   logPath,
 }: {
   decide: (imageString: string) => Promise<boolean>;
   playInitialGreeting: () => Promise<string | null>;
-  getGreeting: (numFaces: number, imageString: string) => Promise<string>;
-  speak: (text: string, filePath?: string) => Promise<void>;
+  getGreeting: (imageString: string) => Promise<string>;
+  generateVoice: (text: string) => Promise<Buffer>;
+  playSound: (filePath: string) => Promise<void>;
   logPath: string;
 }) => {
   const playInitialGreetingWrapped = async () => {
@@ -30,13 +33,13 @@ const onFacesDetectedFactory = ({
     return initialGreeting;
   };
 
-  const getGreetingWrapped = async (numFaces: number, imageString: string) => {
+  const getGreetingWrapped = async (imageString: string) => {
     console.time("getGreeting");
 
     let greeting: string = "";
 
     try {
-      greeting = await getGreeting(numFaces, imageString);
+      greeting = await getGreeting(imageString);
     } catch (error) {
       console.error("Error getting greeting:", error);
     }
@@ -46,18 +49,13 @@ const onFacesDetectedFactory = ({
     return greeting;
   };
 
-  const speakWrapped = async (text: string, filePath?: string) => {
-    console.time("speak");
-
-    if (text.trim()) {
-      try {
-        await speak(text.trim(), filePath);
-      } catch (e) {
-        console.error("Error speaking:", e);
-      }
+  const generateVoiceWrapped = async (text: string) => {
+    try {
+      return await generateVoice(text);
+    } catch (error) {
+      console.error("Error generating voice:", error);
+      return null;
     }
-
-    console.timeEnd("speak");
   };
 
   return async (numFaces: number, imageString: string): Promise<boolean> => {
@@ -77,47 +75,82 @@ const onFacesDetectedFactory = ({
       return false;
     }
 
-    const [initialGreeting, greeting] = await Promise.all([
-      playInitialGreetingWrapped(),
-      getGreetingWrapped(numFaces, imageString),
-    ]);
+    const initialGreetingPromise = playInitialGreetingWrapped();
 
-    if (greeting && greeting.trim()) {
+    const preparedPromise = (async () => {
+      const greeting = (await getGreetingWrapped(imageString)).trim();
+
+      if (!greeting) {
+        return null;
+      }
+
       const now = new Date();
       const jsonFileName = `${now.getTime()}.json`;
       const speechFileName = jsonFileName.replace(/\.json$/, ".mp3");
-      const speechPath = logPath
+      const audio = await generateVoiceWrapped(greeting);
+
+      if (!audio) {
+        return { greeting, now, speechFileName, speechFilePath: null };
+      }
+
+      const speechFilePath = logPath
         ? pathResolve(pathJoin(logPath, speechFileName))
-        : undefined;
+        : pathJoin(tmpdir(), `halloween-greeting-${now.getTime()}.mp3`);
 
       if (logPath) {
         await mkdir(logPath, { recursive: true });
-
-        const json = {
-          timestamp: now.toISOString(),
-          numFaces,
-          initialGreeting,
-          greeting,
-          speechFileName,
-          imageString,
-        };
-
-        const writePath = pathResolve(pathJoin(logPath, jsonFileName));
-
-        writeFile(writePath, JSON.stringify(json, null, 2)).then(
-          null,
-          (error) => {
-            console.error("Error writing log file:", error);
-          }
-        );
       }
 
-      await speakWrapped(greeting, speechPath);
+      await writeFile(speechFilePath, audio);
 
-      return true;
+      return { greeting, now, speechFileName, speechFilePath };
+    })();
+
+    const [initialGreeting, prepared] = await Promise.all([
+      initialGreetingPromise,
+      preparedPromise,
+    ]);
+
+    if (!prepared) {
+      return false;
     }
 
-    return false;
+    if (logPath) {
+      const json = {
+        timestamp: prepared.now.toISOString(),
+        numFaces,
+        initialGreeting,
+        greeting: prepared.greeting,
+        speechFileName: prepared.speechFileName,
+        imageString,
+      };
+
+      const writePath = pathResolve(
+        pathJoin(logPath, `${prepared.now.getTime()}.json`),
+      );
+
+      writeFile(writePath, JSON.stringify(json, null, 2)).then(null, (error) => {
+        console.error("Error writing log file:", error);
+      });
+    }
+
+    if (prepared.speechFilePath) {
+      console.time("playSound");
+
+      try {
+        await playSound(prepared.speechFilePath);
+      } catch (error) {
+        console.error("Error playing sound:", error);
+      } finally {
+        console.timeEnd("playSound");
+      }
+
+      if (!logPath) {
+        await unlink(prepared.speechFilePath).catch(() => undefined);
+      }
+    }
+
+    return true;
   };
 };
 
