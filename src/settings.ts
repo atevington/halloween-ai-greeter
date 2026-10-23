@@ -81,7 +81,7 @@ export const decisionModel =
 
 export const decisionQuestion =
   (process.env.DECISION_QUESTION || "").trim() ||
-  "Are there people in active view who appear to be trick-or-treating, either approaching or waiting for a treat, rather than walking past or only in the background?";
+  "Is someone approaching, waiting for a treat, or engaging the camera in a costume, mask, or hat? Answer no if people are only walking past or in the background.";
 
 export const decisionThreshold = Math.min(
   Math.max(

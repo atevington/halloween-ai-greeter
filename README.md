@@ -57,7 +57,7 @@ OPENAI_MODEL=gpt-6-luna
 OPENAI_REASONING=none
 DECISION_MODEL=gpt-6-luna
 DECISION_THRESHOLD=0.6
-DECISION_QUESTION=Are there people in active view who appear to be trick-or-treating, either approaching or waiting for a treat, rather than walking past or only in the background?
+DECISION_QUESTION=Is someone approaching, waiting for a treat, or engaging the camera in a costume, mask, or hat? Answer no if people are only walking past or in the background.
 ```
 
 - **`INTERVAL_MS`** — milliseconds between screenshots. Minimum `100`. A capture waits until the previous one finishes.
